@@ -1,8 +1,8 @@
 from dotenv import load_dotenv
+from sqlalchemy import create_engine
 import requests
 import json
 import os
-from sqlalchemy import create_engine
 import pandas as pd
 import time
 
@@ -35,7 +35,7 @@ def fn_execute_api_call_competition_teams(headers: dict, list_competition_id: li
     json_competition_teams = []
 
     for competition_id in list_competition_id: 
-        uri_competition_teams = f"http://api.football-data.org/v4/competitions/{competition_id}/teams"
+        uri_competition_teams = f"https://api.football-data.org/v4/competitions/{competition_id}/teams"
         response = requests.get(uri_competition_teams,headers=headers)
         if response.status_code == 429:
             print('API Status ... ... [LIMIT ERROR]')
@@ -87,8 +87,8 @@ def fn_execute_db_bulk() -> None:
         df_competition_teams = pd_serie_competition_teams.to_frame()
         df_competition_teams = pd.json_normalize(df_competition_teams[0],'teams',[['competition','id'],['competition','name']])
         df_competition_teams = df_competition_teams.rename(columns={'competition.id':'fact_competitions','competition.name':'competition_name','id':'team_id'})
-
         df_competition_teams = df_competition_teams[['team_id','name','shortName','tla','fact_competitions','competition_name']]
+        
         df_competition_teams_fact = df_competition_teams[['fact_competitions','team_id']]
 
         df_teams_dim = df_competition_teams[['team_id','name']]
