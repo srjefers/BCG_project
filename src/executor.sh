@@ -43,7 +43,7 @@ cd ./python
 python3 script.py
 conda deactivate 
 
- 
+exit 0
 
     
 
