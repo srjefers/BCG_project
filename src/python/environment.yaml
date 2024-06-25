@@ -1,0 +1,11 @@
+# environment.yaml
+
+name: bcg_project
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12.4
+  - anaconda
+  - pip
+  - pip:
+    - -r requirements.txt
