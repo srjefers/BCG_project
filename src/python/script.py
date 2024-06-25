@@ -154,15 +154,17 @@ def main():
         Main -> None
         Main process.
     """
-    print('Starting process ... ... [OK]')
-    load_dotenv()
-    api_token = os.getenv("API_Token")
-    headers = {'X-Auth-Token': api_token}
-    list_competition_id = fn_execute_api_call_competition(headers)
-    fn_execute_api_call_competition_teams(headers, list_competition_id)
-    fn_execute_db_bulk()
-    fn_export_summary()
-    print('Finishing process ... ... [OK]')
-
+    try:
+        print('Starting process ... ... [OK]')
+        load_dotenv()
+        api_token = os.getenv("API_Token")
+        headers = {'X-Auth-Token': api_token}
+        list_competition_id = fn_execute_api_call_competition(headers)
+        fn_execute_api_call_competition_teams(headers, list_competition_id)
+        fn_execute_db_bulk()
+        fn_export_summary()
+        print('Finishing process ... ... [OK]')
+    except:
+        print('Error throws at main ... ... [ERROR]')
 if __name__ == '__main__':
     main()
