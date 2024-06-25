@@ -1,0 +1,8 @@
+sqlalchemy
+pandas
+numpy
+psycopg2 
+pyarrow
+requests
+json
+python-dotenv
