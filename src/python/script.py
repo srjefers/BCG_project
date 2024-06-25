@@ -112,6 +112,43 @@ def fn_execute_db_bulk() -> None:
     except:
         print(f'Dimension {dim_teams} ... ... [ERROR]')
 
+def fn_export_summary() -> bool:
+    """
+        fn_export_summary   -> bool
+        Function created to export a summary from data.
+    """
+    try:
+        engine = create_engine('sqlite:///./data/db_bcg_project.db') 
+        df_export = pd.read_sql('''
+            with dim_teams_cte as (
+                select * from dim_teams
+            ),
+            dim_competitions_cte as (
+                select * from dim_competitions
+            ),
+            fact_competitions_cte as (
+                select * from fact_competitions
+            ),
+            final as (
+                select  
+                    dim_competitions_cte.name,  
+                    count(dim_teams_cte.id) nm_teams
+                from fact_competitions_cte
+                left join dim_competitions_cte  on dim_competitions_cte.id = fact_competitions_cte.fact_competitions
+                left join dim_teams_cte         on dim_teams_cte.id = fact_competitions_cte.team_id
+                group by 
+                    dim_competitions_cte.name
+                order by nm_teams desc
+            )
+            select * from final
+        ''',engine)
+
+        df_export.to_csv('./outputs/summary_data.csv', index=False)
+        print('Data exported ... ... [OK]')  
+        return True
+    except:
+        print('Error exporting file ... ... [ERROR]')
+
 def main():
     """
         Main -> None
@@ -124,6 +161,7 @@ def main():
     list_competition_id = fn_execute_api_call_competition(headers)
     fn_execute_api_call_competition_teams(headers, list_competition_id)
     fn_execute_db_bulk()
+    fn_export_summary()
     print('Finishing process ... ... [OK]')
 
 if __name__ == '__main__':
